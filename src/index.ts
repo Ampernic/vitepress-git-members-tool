@@ -1,5 +1,6 @@
 import yargs from 'yargs'
 import { init } from './utils/init.js'
+import { gray, blueBright } from 'colorette'
 import figlet from "figlet"
 
 const args = yargs(process.argv)
@@ -18,13 +19,17 @@ const main = () => {
 }
 
 figlet.text(
-  "Vitepress GitMembers",
+  "VP GitMembers",
   {
-    font: "Diet Cola",
+    font: "Cybermedium",
   },
   function (err, data) {
-    console.log(data);
-    console.log("\nMade with love by Ampernic (@alt-gnome)\n")
+    console.log(blueBright(`${data}`));
+    console.log(gray(`
+Vitepress GitHub integration for team page and section
+Made with love by Ampernic (@alt-gnome)
+Licence: MIT
+`))
     main()
   }
 )
