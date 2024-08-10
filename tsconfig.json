@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist",
+    "strict": true,
+    "target": "ESNext",
+    "module": "ESNext",
+    "sourceMap": true,
+    "esModuleInterop": true,
+    "moduleResolution": "Bundler"
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.d.ts",
+    "src/**/*.vue",
+    "src/**/*.tsx",
+    "src/index.ts"
+  ],
+  "exclude": [
+    "**/dist/**",
+    "node_modules"
+  ]
+}
