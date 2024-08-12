@@ -1,17 +1,20 @@
 {
-  "name": "@ampernic/vitepress-git-members-tool",
+  "name": "@ampernic/vitepress-plugin-git-members",
   "version": "0.0.1",
-  "type": "module",
   "description": "Vitepress team page GitHub integration",
+  "type": "module",
   "main": "./dist/index.js",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
-    "./utils/init": {
-      "types": "./dist/utils/init.d.ts",
-      "import": "./dist/utils/init.js"
+    "./types": {
+      "types": "./dist/types/index.d.ts"
+    },
+    "./utils/git": {
+      "types": "./dist/utils/git.d.ts",
+      "import": "./dist/utils/git.js"
     }
   },
   "scripts": {
@@ -20,7 +23,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Ampernic/vitepress-git-members-tool.git"
+    "url": "https://github.com/Ampernic/vitepress-git-members-tool"
   },
   "keywords": [
     "vitepress",
@@ -33,18 +36,19 @@
   "bugs": {
     "url": "https://github.com/Ampernic/vitepress-git-members-tool/issues"
   },
-  "homepage": "https://github.com/Ampernic/vitepress-git-members-tool#readme",
+  "homepage": "https://github.com/Ampernic/vitepress-git-members-tool",
   "devDependencies": {
     "@types/node": "^20.0.0",
-    "@types/yargs": "^17.0.33",
     "typescript": "^5.5.4"
   },
   "dependencies": {
     "@octokit/core": "^6.1.2",
     "@types/figlet": "^1.5.8",
+    "@types/yargs": "^17.0.33",
     "colorette": "^2.0.20",
     "figlet": "^1.7.0",
     "ora": "^8.0.1",
+    "ts-node": "^10.9.2",
     "yargs": "^17.7.2"
   }
 }

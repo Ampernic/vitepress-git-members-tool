@@ -1,20 +1,43 @@
 {
   "compilerOptions": {
-    "rootDir": "src",
-    "outDir": "dist",
-    "strict": true,
+    "resolveJsonModule": true,
+    "types": [
+      "node",
+    ],
     "target": "ESNext",
+    "jsx": "preserve",
+    "lib": [
+      "DOM",
+      "ESNext"
+    ],
     "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "composite": false,
+    "baseUrl": "./src",
+    "strict": true,
+    "strictNullChecks": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitAny": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "declaration": true,
+    "noEmit": false,
+    "outDir": "./dist",
+    "removeComments": false,
     "sourceMap": true,
     "esModuleInterop": true,
-    "moduleResolution": "Bundler"
+    "forceConsistentCasingInFileNames": true,
+    "isolatedModules": true,
+    "verbatimModuleSyntax": true,
+    "skipDefaultLibCheck": true,
+    "skipLibCheck": true
   },
   "include": [
     "src/**/*.ts",
     "src/**/*.d.ts",
     "src/**/*.vue",
     "src/**/*.tsx",
-    "src/index.ts"
+    "src/index.mts"
   ],
   "exclude": [
     "**/dist/**",
