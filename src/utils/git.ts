@@ -84,9 +84,63 @@ export const generate = async (args: any) => {
                 spiner.start(`${toolname} Try to get stats of repo...\n`)
                 const stats = await getStats(connection, args.url, spiner, toolname)
                 if (stats) {
-                    stats.forEach(async (contributor) => {
+                    const authors = []
+                    await stats.forEach(async (contributor) => {
                         if (contributor.author) {
                             const contributorAbout = await getUserInfo(connection, contributor.author.login, spiner, toolname)
+
+                            const author = {
+                                mapByNameAliases: [contributor.author.login],
+                                name: contributorAbout.name,
+                                title: 'Участник',
+                                avatar: contributor.author.avatar_url,
+                                summary: {
+                                  commits: contributor.total,
+                                  add: 0,
+                                  remove: 0
+                                },
+                                lastMonthActive: {
+                                  commits: 0,
+                                  add: 0,
+                                  remove: 0
+                                },
+                                links: [{ icon: 'github', link: contributor.author.html_url }]
+                            }
+
+                            contributor.weeks.forEach((week) => {
+                                if (week.a && week.d) {
+                                    author.summary.add += week.a
+                                    author.summary.remove += week.d
+                                }
+                              })
+                          
+                            contributor.weeks.slice(-4).forEach((week) => {
+                                if (week.a && week.d && week.c) {
+                                    author.lastMonthActive.add += week.a
+                                    author.lastMonthActive.remove += week.d
+                                    author.lastMonthActive.commits += week.c
+                                }
+                            })
+
+                            if (teamFile.team) {
+                                teamFile.team.forEach((member: any)=> {
+                                    if (
+                                        member.name == contributorAbout.name ||
+                                        Object.values(member.links[0])[1] == Object.values(author.links[0])[1] ||
+                                        (member.nameAliases && member.nameAliases.includes(contributor?.author?.login))
+                                      ) {
+                                        Object.keys(member).forEach((key:string) => {
+                                          key == 'mapByNameAliases'
+                                            ? member[key].forEach((alias:string) => {
+                                              author[key].push(alias)
+                                            })
+                                            : (author[key] = member[key])
+                                        })
+                                      }
+                                })
+                            } else {
+                                spiner.fail(`${toolname} Not found team in input JSON (Check team input file structure)...\n`)
+                            }
                         }
                     })
                 }
