@@ -5,6 +5,8 @@ import ora, { type Ora } from 'ora'
 import * as fs from 'node:fs'
 import * as path from 'node:path'
 import _ from 'lodash'
+import {franc} from 'franc'
+import CyrillicToTranslit from 'cyrillic-to-translit-js';
 
 const ReadJSON = (file: string, spiner: Ora, toolname: string) => {
     try {
@@ -93,11 +95,20 @@ export const generate = async (args: UtilArgs) => {
                         if (contributor.author) {
                             const contributorAbout = await getUserInfo(connection, contributor.author.login, spiner, toolname)
 
+                            console.log(CyrillicToTranslit().transform('Привет Мир!'))
                             const author = {
                                 mapByNameAliases: [contributor.author.login],
                                 name: contributorAbout.name ?? contributor.author.login,
                                 title: 'Участник',
                                 avatar: contributor.author.avatar_url,
+                                i18n: contributorAbout.name ? {
+                                    'ru-RU': franc(contributorAbout.name, {only: ['rus', 'eng']}) == 'rus' ?
+                                                contributorAbout.name : 
+                                                CyrillicToTranslit().reverse(contributorAbout.name),
+                                    'en-EN': franc(contributorAbout.name, {only: ['rus', 'eng']}) == 'eng' ?
+                                                contributorAbout.name : 
+                                                CyrillicToTranslit().transform(contributorAbout.name)
+                                } : undefined,
                                 summary: {
                                   commits: contributor.total,
                                   add: 0,
@@ -138,7 +149,6 @@ export const generate = async (args: UtilArgs) => {
                             })
 
                             authors.push(author)
-                            //console.log(authors)
                         }
                     }
 
