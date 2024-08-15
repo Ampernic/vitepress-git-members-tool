@@ -1,0 +1,4 @@
+/node_modules/*
+/_data/**/*
+/.vitepress/**/*
+/.github/**/*

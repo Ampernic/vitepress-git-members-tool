@@ -82,7 +82,7 @@ export const generate = async (args: UtilArgs) => {
     spiner.start(`${toolname} Try to open team map file...\n`)
     const teamFile = ReadJSON(args.file, spiner, toolname)
     
-    if (teamFile.team){
+    if (teamFile && teamFile.team){
         if(args.key){
             const connection = API(args.key)
             if (args.url) {
