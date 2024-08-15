@@ -50,7 +50,6 @@
     "cyrillic-to-translit-js": "^3.2.1",
     "figlet": "^1.7.0",
     "franc": "^6.2.0",
-    "languagedetect": "^2.0.0",
     "lodash": "^4.17.21",
     "ora": "^8.0.1",
     "ts-node": "^10.9.2",
