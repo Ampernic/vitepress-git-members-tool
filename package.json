@@ -1,6 +1,6 @@
 {
   "name": "@ampernic/vitepress-plugin-git-members",
-  "version": "1.0.0-e",
+  "version": "1.0.0-ff",
   "description": "Vitepress team page GitHub integration",
   "type": "module",
   "main": "./dist/index.js",
@@ -19,7 +19,7 @@
   },
   "scripts": {
     "build": "tsc",
-    "publish": "npm publish --access public --no-git-checks",
+    "publish": "npm run build && npm publish --access public --no-git-checks",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
