@@ -8,7 +8,7 @@
     "jsx": "preserve",
     "lib": [
       "DOM",
-      "ESNext"
+      "ESNext",
     ],
     "module": "ESNext",
     "moduleResolution": "Bundler",

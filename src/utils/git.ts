@@ -1,8 +1,10 @@
+import type { UtilArgs, TeamMember, ContributorMember } from 'types'
 import { Octokit } from '@octokit/core'
 import { cyan, gray } from 'colorette'
 import ora, { type Ora } from 'ora'
 import * as fs from 'node:fs'
 import * as path from 'node:path'
+import _ from 'lodash'
 
 const ReadJSON = (file: string, spiner: Ora, toolname: string) => {
     try {
@@ -50,8 +52,9 @@ const getStats = async (connection: Octokit, url: string, spiner: Ora, toolname:
         if (stats?.status == 202) {
             retryCount += 1
             spiner.text = `${toolname} Try to get stats of repo ( Attempt: ${retryCount})...\n`
+        } else {
+            return stats?.data
         }
-        return stats?.data
     }
 }
 
@@ -70,28 +73,29 @@ const getUserInfo = async (connection: Octokit, login: string, spiner: Ora, tool
       )
 }
 
-export const generate = async (args: any) => {
+export const generate = async (args: UtilArgs) => {
     const toolname = `${cyan(`[ ${args.pkgName} | Vitepress Git Members ]`)}${gray(':')}`
     const spiner = ora({ discardStdin: false })
 
     spiner.start(`${toolname} Try to open team map file...\n`)
     const teamFile = ReadJSON(args.file, spiner, toolname)
     
-    if (teamFile){
+    if (teamFile.team){
         if(args.key){
             const connection = API(args.key)
             if (args.url) {
                 spiner.start(`${toolname} Try to get stats of repo...\n`)
                 const stats = await getStats(connection, args.url, spiner, toolname)
                 if (stats) {
-                    const authors = []
-                    await stats.forEach(async (contributor) => {
+                    const authors: Array<ContributorMember> = []
+
+                    for await (const contributor of stats.values()) {
                         if (contributor.author) {
                             const contributorAbout = await getUserInfo(connection, contributor.author.login, spiner, toolname)
 
                             const author = {
                                 mapByNameAliases: [contributor.author.login],
-                                name: contributorAbout.name,
+                                name: contributorAbout.name ?? contributor.author.login,
                                 title: 'Участник',
                                 avatar: contributor.author.avatar_url,
                                 summary: {
@@ -107,14 +111,16 @@ export const generate = async (args: any) => {
                                 links: [{ icon: 'github', link: contributor.author.html_url }]
                             }
 
-                            contributor.weeks.forEach((week) => {
+                            contributorAbout.name ? author.mapByNameAliases.push(contributorAbout.name) : null
+
+                            contributor.weeks.forEach((week: Record<string, number>) => {
                                 if (week.a && week.d) {
                                     author.summary.add += week.a
                                     author.summary.remove += week.d
                                 }
                               })
                           
-                            contributor.weeks.slice(-4).forEach((week) => {
+                            contributor.weeks.slice(-4).forEach((week: Record<string, number>) => {
                                 if (week.a && week.d && week.c) {
                                     author.lastMonthActive.add += week.a
                                     author.lastMonthActive.remove += week.d
@@ -122,28 +128,25 @@ export const generate = async (args: any) => {
                                 }
                             })
 
-                            if (teamFile.team) {
-                                teamFile.team.forEach((member: any)=> {
-                                    if (
-                                        member.name == contributorAbout.name ||
-                                        Object.values(member.links[0])[1] == Object.values(author.links[0])[1] ||
-                                        (member.nameAliases && member.nameAliases.includes(contributor?.author?.login))
-                                      ) {
-                                        Object.keys(member).forEach((key:string) => {
-                                          key == 'mapByNameAliases'
-                                            ? member[key].forEach((alias:string) => {
-                                              author[key].push(alias)
-                                            })
-                                            : (author[key] = member[key])
-                                        })
-                                      }
+                            teamFile.team.forEach((member: TeamMember)=> {
+                                member.mapByNameAliases?.forEach(alias => {
+                                    if (author.mapByNameAliases.includes(alias)){
+                                        _.merge(author, member)
+                                        return
+                                    }
                                 })
-                            } else {
-                                spiner.fail(`${toolname} Not found team in input JSON (Check team input file structure)...\n`)
-                            }
+                            })
+
+                            authors.push(author)
+                            //console.log(authors)
                         }
-                    })
+                    }
+
+                    spiner.succeed(`${toolname} Member map and list created succesfuly.\n`)
+                    spiner.start(`${toolname} Saving map to "${args.out}"...\n`)
+                    WriteJSON(args.out, authors, spiner, toolname)
                 }
+                
             } else {
                 spiner.fail(`${toolname} Repo not found (Check --url option)...\n`)
             }
@@ -151,5 +154,7 @@ export const generate = async (args: any) => {
             spiner.warn(`${toolname} Missing github key! Generate default file. (Check --key option)\n`)
             WriteJSON(args.out, teamFile, spiner, toolname)
         }
+    } else {
+        spiner.fail(`${toolname} Not found team in input JSON (Check team input file structure)...\n`)
     }
 }

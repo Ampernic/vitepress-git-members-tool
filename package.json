@@ -38,15 +38,17 @@
   },
   "homepage": "https://github.com/Ampernic/vitepress-git-members-tool",
   "devDependencies": {
-    "@types/node": "^20.0.0",
+    "@types/node": "^20.14.15",
     "typescript": "^5.5.4"
   },
   "dependencies": {
     "@octokit/core": "^6.1.2",
     "@types/figlet": "^1.5.8",
+    "@types/lodash": "^4.17.7",
     "@types/yargs": "^17.0.33",
     "colorette": "^2.0.20",
     "figlet": "^1.7.0",
+    "lodash": "^4.17.21",
     "ora": "^8.0.1",
     "ts-node": "^10.9.2",
     "yargs": "^17.7.2"
