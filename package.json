@@ -1,6 +1,6 @@
 {
   "name": "@ampernic/vitepress-plugin-git-members",
-  "version": "0.0.1",
+  "version": "0.0.2b",
   "description": "Vitepress team page GitHub integration",
   "type": "module",
   "main": "./dist/index.js",
