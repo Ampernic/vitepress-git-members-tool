@@ -2,6 +2,7 @@
   "compilerOptions": {
     "resolveJsonModule": true,
     "types": [
+      "vite/client",
       "node",
     ],
     "target": "ESNext",
@@ -30,12 +31,13 @@
     "isolatedModules": true,
     "verbatimModuleSyntax": true,
     "skipDefaultLibCheck": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    
   },
   "include": [
     "src/**/*.ts",
     "src/**/*.d.ts",
-    "src/**/*.vue",
+    "src/components/*.vue",
     "src/**/*.tsx",
     "src/index.mts"
   ],
